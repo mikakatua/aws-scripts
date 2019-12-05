@@ -42,7 +42,7 @@ git clone $git_args $GIT_ADDRESS:$GIT_REPO.git $TMP_DIR/$GIT_REPO
 cd $TMP_DIR/$GIT_REPO
 
 # Build & Push
-$(aws ecr get-login --no-include-email --region $AWS_REGION) 
+$(aws ecr get-login --no-include-email --region $AWS_REGION | sed 's|https://||')
 docker build -t $ECR_REPO .
 docker tag $ECR_REPO:latest $ECR_ADDRESS/$ECR_REPO:latest
 docker push $ECR_ADDRESS/$ECR_REPO:latest
