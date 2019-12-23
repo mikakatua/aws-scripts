@@ -6,7 +6,6 @@ GIT_REPO=$4
 GIT_BRANCH=$5
 GIT_ADDRESS=git@gitlab.example.com
 ECR_ADDRESS=012345678901.dkr.ecr.us-west-1.amazonaws.com
-AWS_REGION=us-west-1
 TMP_DIR=/tmp
 
 usage()
@@ -42,9 +41,9 @@ git clone $git_args $GIT_ADDRESS:$GIT_REPO.git $TMP_DIR/$GIT_REPO
 cd $TMP_DIR/$GIT_REPO
 
 # Build & Push
-$(aws ecr get-login --no-include-email --region $AWS_REGION | sed 's|https://||')
 docker build -t $ECR_REPO .
 docker tag $ECR_REPO:latest $ECR_ADDRESS/$ECR_REPO:latest
+$(aws ecr get-login --no-include-email | sed 's|https://||')
 docker push $ECR_ADDRESS/$ECR_REPO:latest
 
 # Stop Tasks
