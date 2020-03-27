@@ -43,22 +43,22 @@ cd $TMP_DIR/$GIT_REPO
 # Build & Push
 docker build -t $ECR_REPO .
 docker tag $ECR_REPO:latest $ECR_ADDRESS/$ECR_REPO:latest
-$(aws ecr get-login --no-include-email | sed 's|https://||')
+$(aws ecr get-login --no-include-email --output text | sed 's|https://||')
 docker push $ECR_ADDRESS/$ECR_REPO:latest
 
 # Stop Tasks
-TASKS=$(aws ecs list-tasks --cluster $ECS_CLUSTER --service $ECS_SERVICE --query "taskArns[*]")
+TASKS=$(aws ecs list-tasks --cluster $ECS_CLUSTER --service $ECS_SERVICE --query "taskArns[*]" --output text)
 for TASK_ARN in $TASKS
 do
-  aws ecs stop-task --cluster $ECS_CLUSTER --task $TASK_ARN &> /dev/null
+  aws ecs stop-task --cluster $ECS_CLUSTER --task $TASK_ARN --output text &> /dev/null
 done
 
 # Wait until all tasks are running
 set +e
 while true
 do
-  TASKS=$(aws ecs list-tasks --cluster $ECS_CLUSTER --service $ECS_SERVICE --query "taskArns[*]")
-  aws ecs describe-tasks --cluster $ECS_CLUSTER --tasks $TASKS --query "tasks[*][taskArn,lastStatus]"
+  TASKS=$(aws ecs list-tasks --cluster $ECS_CLUSTER --service $ECS_SERVICE --query "taskArns[*]" --output text)
+  aws ecs describe-tasks --cluster $ECS_CLUSTER --tasks $TASKS --query "tasks[*][taskArn,lastStatus]" --output text
   sleep 2
 done
 
