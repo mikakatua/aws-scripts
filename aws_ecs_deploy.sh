@@ -41,6 +41,7 @@ git clone $git_args $GIT_ADDRESS:$GIT_REPO.git $TMP_DIR/$GIT_REPO
 cd $TMP_DIR/$GIT_REPO
 
 # Build & Push
+docker rmi -f $(docker images $ECR_REPO -q)
 docker build -t $ECR_REPO .
 docker tag $ECR_REPO:latest $ECR_ADDRESS/$ECR_REPO:latest
 aws ecr get-login-password --region $AWS_DEFAULT_REGION | docker login --username AWS --password-stdin $ECR_ADDRESS/$ECR_REPO
