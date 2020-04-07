@@ -43,7 +43,7 @@ cd $TMP_DIR/$GIT_REPO
 # Build & Push
 docker build -t $ECR_REPO .
 docker tag $ECR_REPO:latest $ECR_ADDRESS/$ECR_REPO:latest
-aws ecr get-login-password | docker login --username AWS --password-stdin $ECR_ADDRESS/$ECR_REPO
+aws ecr get-login-password --region $AWS_DEFAULT_REGION | docker login --username AWS --password-stdin $ECR_ADDRESS/$ECR_REPO
 docker push $ECR_ADDRESS/$ECR_REPO:latest
 
 # Stop Tasks
